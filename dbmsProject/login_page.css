@@ -1,0 +1,80 @@
+*{
+  margin: 0px;padding: 0px;
+}
+
+.background-image{
+  background-image: url("https://th.bing.com/th/id/R.eaec57b990eeccebc2223b2dc3f8fa1c?rik=j8cXEFGJfhNlkA&riu=http%3a%2f%2fwww.covingtontravel.com%2fwp-content%2fuploads%2f2017%2f05%2fViking-Oceans.jpg&ehk=g86EfZnxygsJeh%2fnu3t8JyZEeuUBHxhNzkztEgpj6yQ%3d&risl=&pid=ImgRaw&r=0");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height:100vh;
+}
+.__main__{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+}
+.__main__{
+  height: 450px;
+  width: 373px;
+  border-radius: 10px;
+  display:flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(0,0,0,1);
+  color:#fff;
+  padding-top:60px;
+  font-weight: 50px;
+}
+
+h1 {
+  margin-left:20px ;
+  height:100px;
+  color:rgb(255, 255, 255);
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+   font-size: 50px;
+   letter-spacing: 1.5px;
+   text-align:center;
+}
+
+.login-header{
+ font-size: 33px;
+ letter-spacing: 1.5px;
+ color:#000000;
+}
+
+#login_form{
+  margin-top: 75px;
+}
+
+input{
+  width: 200px;
+  background:rgba(0, 0, 0, 0.75);
+  margin-top: 20px;
+  outline:none;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 35px;
+  box-shadow:0 0 5px rgb(97, 80, 80) ;
+  box-shadow : 0.5s ease;
+}
+
+.btn-dark{
+  padding: 10px;
+  margin-top:20px ;
+  width: 200px;
+  background: transparent;
+  border-radius:35px ;
+  box-shadow: 0 0 4px #fff;
+  cursor:pointer ;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+}
+
+input[placeholder]:focus{
+  color:rgb(255, 255, 255)
+}
+
+input:focus,.btn-dark:hover{
+  box-shadow: 0 0 10px rgba(0,0,0,1);
+}

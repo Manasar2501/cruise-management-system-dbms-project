@@ -1,0 +1,165 @@
+CREATE table admin(
+ slno int PRIMARY KEY AUTO_INCREMENT,
+admin char(20),
+password varchar(10) UNIQUE
+);
+
+CREATE TABLE port(
+    port_id varchar(5)  PRIMARY KEY NOT null ,
+    port_name char(15) NOT null
+);
+CREATE TABLE cruise(
+ 	cid varchar(3) PRIMARY KEY NOT null,
+    cruise_name char(30) not null,
+    cruise_type char(20) not null
+);
+
+
+CREATE TABLE location(
+    port_id varchar(5)   NOT null ,
+    cid varchar(3) NOT null,
+    PRIMARY KEY(port_id, cid),
+    city char(15) NOT null,
+    FOREIGN KEY(port_id) REFERENCES port(port_id),
+    FOREIGN KEY(cid) REFERENCES cruise(cid)
+);
+CREATE TABLE employee(
+	ssn varchar(8) PRIMARY KEY NOT null,
+    emp_fname char(20) ,
+    emp_lname char(20) ,
+    emp_age int(5) CHECK (emp_age>=20),
+    post_name char(40) ,
+    jdate date,
+    cid varchar(3),
+    email varchar(30),
+    sal int(8),
+    FOREIGN KEY(cid) REFERENCES cruise(cid)
+);
+
+CREATE TABLE passenger(
+    psgr_id int(4) PRIMARY KEY ,
+    psgr_name char(35),
+    psgr_age int(5) CHECK (psgr_age>=3),
+    amt int(9),
+    psgr_email varchar(30)    
+);
+  
+
+CREATE TABLE bookby(
+    book_id int NOT null AUTO_INCREMENT,
+    psgr_id int(4),
+    cid varchar(3) ,
+    PRIMARY KEY(book_id,psgr_id, cid),
+    FOREIGN key(psgr_id) REFERENCES passenger(psgr_id)  ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(cid) REFERENCES cruise(cid) ON DELETE CASCADE ,
+    trdate date NOT null
+);
+
+
+
+
+*--------------------------------------------------------*
+insertion
+
+INSERT INTO admin(admin, password) VALUES ('janman','mj2517');
+
+INSERT into port (port_id, port_name) VALUES 
+("p111", "cozomel");
+INSERT into port (port_id, port_name) VALUES 
+("p222", "progresso");
+INSERT into port (port_id, port_name) VALUES 
+("p333", "calica");
+
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c1", "carnival breeze", "mainstream");
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c2", "anthem of the sea", "mainstream");
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c3", "celebrity", "premium");
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c4", "capitals", "premium");
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c5", "seabour", "luxury");
+INSERT INTO cruise (cid, cruise_name, cruise_type) VALUES ("c6", "regent seven seas", "luxury");
+
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p111", "c1", "mexico"
+);
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p222", "c2", "italy"
+);
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p333", "c3", "italy"
+);
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p333", "c4", "italy"
+);
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p222", "c5", "italy"
+);
+INSERT INTO location (port_id, cid, city ) VALUES (
+"p333", "c6", "italy"
+);
+
+
+
+queries
+*-----------------------------------------
+service page cruise , port and location details
+
+SELECT l.cid, c.cruise_name, c.cruise_type, l.port_id, p.port_name, l.city FROM location l, cruise c, port p WHERE l.cid = c.cid and l.port_id = p.port_id order by cid;     ****output positive******
+
+*-------------------------------------------------
+travellers data page
+
+//*** searching by pid***//
+SELECT  b.book_id, b.psgr_id, p.psgr_name, p.psgr_age, p.amt, p.psgr_email, b.cid, c.cruise_type, c.cruise_name FROM bookby b, cruise c, passenger p WHERE b.cid = c.cid AND b.psgr_id = p.psgr_id AND p.psgr_id = 300 ORDER  BY book_id ;
+
+//***display details***//
+SELECT  b.book_id, b.psgr_id, p.psgr_name, p.psgr_age, p.psgr_phno, p.amt,
+b.cid, c.cruise_type, c.cruise_name
+FROM bookby b, cruise c, passenger p
+WHERE b.cid = c.cid AND b.psgr_id = p.psgr_id
+ORDER  BY book_id;
+
+*---------------------------------------------
+ employee data page
+ SELECT * FROM employee;
+
+
+
+
+
+
+ UPDATE employee
+SET sal = 60000, emp_age = 51
+WHERE ssn ="em004";
+
+*------------------------------------------------------------
+TRIGGERS
+
+*----------------------------------------------------------
+procedure
+
+DELIMITER $
+    CREATE PROCEDURE updateEmp(upssn varchar(7), upsal int(8), upage int(4))
+        BEGIN
+            UPDATE employee 
+            SET emp_age = upsal , sal = upage
+            WHERE ssn = upssn;
+        END
+
+CALL updateEmp('em001', 60000, 30);
+
+
+*--------------------cruise members greter than 10------------------------------------
+SELECT COUNT(cid), trdate FROM bookby GROUP BY trdate, cid HAVING COUNT(cid) >5;
+
+ CHECK CONSTRAINT NOT EXISTS (SELECT COUNT(cid), trdate FROM bookby GROUP BY trdate, cid HAVING COUNT(cid) >5);
+
+
+
+
+CREATE TRIGGER `addNUll` BEFORE DELETE ON `bookby` FOR EACH ROW UPDATE passenger SET psgr_email = 'Null' WHERE psgr_id = bookby.psgr_id
+
+CREATE TRIGGER `nameCheck` AFTER INSERT ON `employee` FOR EACH ROW if(NEW.emp_fname = NEW.emp_lname) THEN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "first name and last name equal is not alowed"; END IF;
+
+
+
+
+
